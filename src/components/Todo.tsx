@@ -28,8 +28,8 @@ export default function Todo() {
         <div style={{ marker: "none" }}>
           {array.map((item: any, index: number) => <div key={index} className="inputfield">
             {index+1}.
-            <input type="checkbox" onChange={(index) => handleCheckbox(index)} style={{ height: "25px", width: "25px", marginRight: "10px" }} />
             {item.todo}
+            <input type="checkbox" onChange={(index) => handleCheckbox(index)} style={{ height: "22px", width: "25px", marginRight: "5px" ,marginLeft:"10px"}} />
             <button className="btn-delete" onClick={() => handleDelete(index)}>Delete</button>
           </div>)}
         </div>
