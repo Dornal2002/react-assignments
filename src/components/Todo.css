@@ -44,3 +44,10 @@ li{
  font-size: 25px;
  margin-left: 0px;
 }
+
+.check-box{
+    height: 22px;
+    width: 25px;
+    margin-left: 10px;
+    margin-right: 5px;
+}
