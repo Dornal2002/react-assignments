@@ -2,30 +2,30 @@ import React, { useState } from "react";
 import "./Todo.css";
 
 export default function Todo() {
-  interface ITodo {
+  interface Todo {
     id: number;
     title: string;
     checked: boolean;
   }
   const [title, setTitle] = useState<string>("");
-  const [array, setArray] = useState<ITodo[]>([]);
+  const [todolist, setTodolist] = useState<Todo[]>([]);
   const [nextId, setNextId] = useState<number>(1);
 
   const handleAdd = () => {
-    setArray([...array, { id: nextId, title: title, checked: false }]);
+    setTodolist([...todolist, { id: nextId, title: title, checked: false }]);
     setTitle("");
     setNextId(nextId + 1);
   };
 
-  const handleDelete = (deleteTodo: ITodo) => {
-    const filteredArray = array.filter(
-      (todo: ITodo) => todo.id !== deleteTodo.id
+  const handleDelete = (deleteTodo: Todo) => {
+    const filteredArray = todolist.filter(
+      (todo: Todo) => todo.id !== deleteTodo.id
     );
-    setArray(filteredArray);
+    setTodolist(filteredArray);
   };
-  const handleCheckbox = (todo: ITodo) => {
+  const handleCheckbox = (todo: Todo) => {
     todo.checked = !todo.checked;
-    setArray([...array]);
+    setTodolist([...todolist]);
   };
   return (
     <div className="container">
@@ -39,9 +39,9 @@ export default function Todo() {
         Add
       </button>
       <div style={{ marker: "none" }}>
-        {array.map((item: ITodo, idx) => (
+        {todolist.map((item: Todo, index:number) => (
           <div key={item.id} className="inputfield">
-            {idx + 1}.{item.title}
+            {index + 1}.{item.title}
             <input
               className="checkbox"
               checked={item.checked}
