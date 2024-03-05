@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Todo.css";
+import { Todo } from "./useFetch";
 import useFetch from "./useFetch";
-
-
-export interface Todo {
-  id: number;
-  title: string;
-  isCompleted:boolean;
-}
 
 export default function GetTodos() {
 
@@ -15,7 +9,7 @@ export default function GetTodos() {
   const [title, setTitle] = useState<string>("");
   const [todolist, setTodolist] = useState<Todo[]>([]);
   const [nextId, setNextId] = useState<number>(1);
-  
+
   useEffect(()=>{
     setTodolist(todos)
   },[todos])
