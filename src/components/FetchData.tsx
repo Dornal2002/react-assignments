@@ -3,7 +3,7 @@ import GetTodos from "./GetTodos";
 
 export default function FetchData() {
   const [todos, setTodos] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
