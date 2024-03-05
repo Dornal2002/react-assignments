@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import "./Todo.css";
 
+interface Todo {
+  id: number;
+  title: string;
+  checked: boolean;
+}
+
 export default function Todo() {
-  interface Todo {
-    id: number;
-    title: string;
-    checked: boolean;
-  }
+
   const [title, setTitle] = useState<string>("");
   const [todolist, setTodolist] = useState<Todo[]>([]);
   const [nextId, setNextId] = useState<number>(1);
