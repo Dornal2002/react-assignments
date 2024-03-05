@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from "react";
 import GetTodos from "./GetTodos";
 
-export default function FetchData() {
-  const [todos, setTodos] = useState(null);
+
+export interface Todo {
+  id: number;
+  title: string;
+  isCompleted:boolean;
+}
+
+export default function useFetch(url:string) {
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState(null);
+  // const [trigger,setTrigger]=useState<number>(0);
 
   useEffect(() => {
-    fetch("http://localhost:8000/todos")
+    fetch(url)
       .then((res) => {
         if (!res.ok) {
           throw Error("Error Occured : Could not fetch the data");
@@ -26,12 +34,16 @@ export default function FetchData() {
         setLoading(false);
       });
   }, []);
-  return (
-    <div>
-      <h1>TodoList</h1>
-      {error && <div>{error}</div>}
-      {loading && <div>Loading... </div>}
-      {todos && <GetTodos todos={todos} />}
-    </div>
-  );
+
+  // const refetch=()=>setTrigger(trigger+1)
+
+  // return (
+  //   <div>
+  //     <h1>TodoList</h1>
+  //     {error && <div>{error}</div>}
+  //     {loading && <div>Loading... </div>}
+  //     {todos && <GetTodos todos={todos} />}
+  //   </div>
+  // );
+  return {todos,loading,error}
 }
