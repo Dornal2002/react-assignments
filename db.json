@@ -1,0 +1,25 @@
+{
+    "todos":[
+        {
+            "id":1,
+            "title":"First Todo",
+            "isCompleted":true
+        },
+        {
+            "id":2,
+            "title":"Second Todo",
+            "isCompleted":false
+        },
+        {
+            "id":3,
+            "title":"Third Todo",
+            "isCompleted":false
+        },
+        {
+            "id":4,
+            "title":"Fourth Todo",
+            "isCompleted":false
+        }
+
+    ]
+}
