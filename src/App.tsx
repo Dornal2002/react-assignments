@@ -3,7 +3,9 @@ import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router,Route, Routes } from 'react-router-dom';
 import Todos from './components/Todos';
-import Blogs from './components/Blogs';
+import AddTodos from './components/AddTodos';
+import Error from './components/Error';
+
 
 function App() {
   return (
@@ -11,7 +13,8 @@ function App() {
       <Router>
         <Routes>
           <Route path='/' element={<Todos/>}/>
-          <Route path='/blogs' element={<Blogs/>}/>
+          <Route path='/addtodos' element={<AddTodos/>}/>
+          <Route path='*' element={<Error/>}/>
         </Routes>
       </Router>
     </div>
