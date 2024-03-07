@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-
-
 export interface Todo {
   id: number;
   title: string;
-  isCompleted:boolean;
+  isCompleted: boolean;
 }
 
-export default function useFetch(url:string) {
+export default function useFetch(url: string) {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState(null);
@@ -45,5 +43,5 @@ export default function useFetch(url:string) {
   //     {todos && <GetTodos todos={todos} />}
   //   </div>
   // );
-  return {todos,loading,error}
+  return { todos, loading, error };
 }
