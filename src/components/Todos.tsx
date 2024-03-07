@@ -62,12 +62,13 @@ export default function Todos() {
         {todolist.map((item: Todo, index: number) => (
           <div
             key={item.id}
-            className="card card-hover justify-content-center text-center w-25 mt-3 mb-3 d-flex flex-row"
+            className="card text-wrap card-content justify-content-center text-center w-50 mt-3 mb-3 d-flex flex-row"
           >
-            <h5 className="card-body card-text d-inline-flex">
+            <h5 className="card-body card-text text-wrap d-inline-flex switch">
               <div onClick={() => navigate("/viewtodos/" + item.id)}>
                 {index + 1}.{item.title}
               </div>
+
               <input
                 className="check-box"
                 checked={item.isCompleted}
