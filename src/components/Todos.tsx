@@ -16,6 +16,8 @@ export default function Todos() {
   const [trigger, setTrigger] = useState(0);
   const [search, setSearch] = useState<string>("");
   const [status, setStatus] = useState("all");
+  const [sortBy, setSortBy] = useState<string>("name");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
 
   const navigate = useNavigate();
 
@@ -57,28 +59,38 @@ export default function Todos() {
       .then(() => setTrigger(trigger + 1));
   };
 
-  const handleSort = (order: string) => {
-    if (order == "asc") {
-      setTodolist([...todolist].sort((a, b) => a.title.localeCompare(b.title)));
-    } else if (order == "desc") {
-      setTodolist([...todolist].sort((a, b) => b.title.localeCompare(a.title)));
+  const handleStatus = (e:React.MouseEvent<HTMLButtonElement,MouseEvent>) => {
+   setStatus(e.currentTarget.value)
+  };
+
+  const filteredData = todolist.filter((item: Todo) => {
+    if (status === 'all') {
+      return true;
+    } else if (status === 'complete') {
+      return item.isCompleted === true;
+    } else if (status === 'incomplete') {
+      return item.isCompleted === false;
     }
-    // if (order == "asc") {
-    //   setTodolist([...todolist].sort((a, b) => a.date.localeCompare(b.date)));
-    // } else if (order == "desc") {
-    //   setTodolist([...todolist].sort((a, b) => b.date.localeCompare(a.date)));
-    // }
+    return false;
+  });
+
+  const handleSort = (criteria: string) => {
+    if (criteria === sortBy) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(criteria);
+      setSortOrder("asc");
+    }
   };
 
-  const handleStatus = (status: string) => {
-    const todos=setTodolist;
-    if (status === "all") return todos;
-    if (status === "true")
-    return todos(todolist.filter((todo) => todo.isCompleted));
-    if (status === "false") return todos(todolist.filter((todo) => !todo.isCompleted));
-
-    setTodolist(todolist)
-  };
+  filteredData.sort((a: Todo, b: Todo) => {
+    if (sortBy === "name") {
+      return sortOrder === "asc" ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title);
+    } else if (sortBy === "date") {
+      return sortOrder === "asc" ? new Date(a.date).getTime() - new Date(b.date).getTime() : new Date(b.date).getTime() - new Date(a.date).getTime();
+    }
+    return 0;
+  });
 
   return (
     <>
@@ -103,20 +115,29 @@ export default function Todos() {
               Sort By
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <button className="dropdown-item" value="name">
+              <button
+                className={`dropdown-item ${sortBy === "name" ? "active" : ""}`}
+                onClick={() => handleSort("name")}
+              >
                 Name
               </button>
-              <button className="dropdown-item" value="date">
+              <button
+                className={`dropdown-item ${sortBy === "date" ? "active" : ""}`}
+                onClick={() => handleSort("date")}
+              >
                 Date
               </button>
             </div>
           </div>
           <div>
-            <span onClick={() => handleSort("asc")}>
+            {/* <span onClick={() => handleSort("asc")}>
               <ArrowUp />
             </span>
             <span onClick={() => handleSort("desc")}>
               <ArrowDown />
+            </span> */}
+              <span onClick={() => handleSort(sortBy)}>
+              {sortOrder === "asc" ? <ArrowUp /> : <ArrowDown />}
             </span>
           </div>
           <div className="dropdown ms-3">
@@ -131,72 +152,42 @@ export default function Todos() {
               Status
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a
+              <button
                 className="dropdown-item"
-                onClick={() => {
-                  handleStatus("all");
-                }}
+                value="all"
+                onClick={handleStatus}
               >
                 All
-              </a>
-              <a
+              </button>
+              <button
                 className="dropdown-item"
-                onClick={() => {
-                  handleStatus("true");
-                }}
+                value="complete"
+                onClick={handleStatus}
               >
                 Completed
-              </a>
-              <a
+              </button>
+              <button
                 className="dropdown-item"
-                onClick={() => {
-                  handleStatus("false");
-                }}
+                value="incomplete"
+                onClick={handleStatus}
               >
                 Incomplete
-              </a>
+              </button>
             </div>
           </div>
         </div>
-        {/* {todolist.map((item: Todo, index: number) => (
-          <div
-            key={item.id}
-            className="card text-wrap card-content justify-content-center text-center w-50 mt-3 mb-3 d-flex flex-row"
-          >
-            <h5 className="card-body card-text text-wrap d-inline-flex switch">
-              <div onClick={() => navigate("/viewtodos/" + item.id)}>
-                {index + 1}.{item.title}
-              </div>
-
-              <input
-                className="check-box"
-                checked={item.isCompleted}
-                onChange={(e) => {
-                  handleCheckbox(item, e);
-                }}
-                type="checkbox"
-              />
-              <button
-                className="btn btn-danger"
-                onClick={() => handleDelete(item.id)}
-              >
-                Delete
-              </button>
-            </h5>
-          </div>
-        ))} */}
         <div className="todos d-flex justify-content-left ms-0">
           <table className="table ">
             <thead>
               <tr>
-                <th>#</th>
+                <th>Sr.No</th>
                 <th>Title</th>
                 <th>Date</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {todolist
+              {filteredData
                 .filter((item) => {
                   return search.toLocaleUpperCase() === ""
                     ? item
