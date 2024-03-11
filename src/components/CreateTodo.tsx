@@ -19,7 +19,7 @@ export default function CreateTodo() {
   };
 
   const handleChangeDate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDate(e.target.value);
+    setDate(e.target.value); 
   };
 
   const handleAdd = () => {
