@@ -19,7 +19,7 @@ export default function AddTodos() {
 
   const handleAdd = () => {
     if (title) {
-      const todoExists = todolist.some((todo) => todo.title === title);
+      const todoExists = todolist.filter((todo) => todo.title === title);
       if (todoExists) {
         alert("Todo already exists");
         return;
