@@ -1,4 +1,6 @@
-export default function TodoNavbar() {
+import React from "react";
+
+const TodoNavbar=()=> {
   return (
     <nav className="navbar navbar-expand-lg bg-secondary justify-content-center">
       <form className="form-inline text-center">
@@ -23,3 +25,4 @@ export default function TodoNavbar() {
     </nav>
   );
 }
+export default TodoNavbar;
