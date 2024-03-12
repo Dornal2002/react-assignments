@@ -24,10 +24,8 @@ export default function useFetch(url: string) {
         setTodos(data);
         setLoading(false);
         setError(null);
-        // console.log(data)
       })
       .catch((err) => {
-        // console.log(err.message);
         setError(err.message);
         setLoading(false);
       });

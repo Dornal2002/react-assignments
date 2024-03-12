@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "./Todos.css";
 import { title } from "process";
-import { useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
+import useFetch from "./useFetch";
 
 export interface Todo {
   id: number;
@@ -11,6 +12,7 @@ export interface Todo {
 }
 
 export default function Todos() {
+  let { todos, loading, error } = useFetch("http://localhost:8000/todos");
   const [todolist, setTodolist] = useState<Todo[]>([]);
   const [trigger, setTrigger] = useState(0);
 
@@ -18,17 +20,25 @@ export default function Todos() {
 
   // const [newTodo,setNewTodo]=useState<Todo>()
 
+  // useEffect(() => {
+  //   fetch("http://localhost:8000/todos")
+  //     .then((resp) => resp.json())
+  //     .then((data) => setTodolist(data));
+  // }, [trigger]);
+
   useEffect(() => {
-    fetch("http://localhost:8000/todos")
-      .then((resp) => resp.json())
-      .then((data) => setTodolist(data));
-  }, [trigger]);
+    if (todos) {
+      setTodolist(todos);
+      // setNextId(todos.length + 1);
+    }
+  }, [todos]);
+  {loading && <div>Loading... </div>}
+  {error && <div>{error}</div>}
 
   const handleCheckbox = (
     todo: Todo,
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(e.target.checked);
     fetch(`http://localhost:8000/todos/${todo.id}`, {
       method: "PATCH",
       headers: {
@@ -45,7 +55,6 @@ export default function Todos() {
   };
 
   const handleDelete = (id: number) => {
-    console.log(id);
     fetch(`http://localhost:8000/todos/${id}`, {
       method: "DELETE",
       headers: {
