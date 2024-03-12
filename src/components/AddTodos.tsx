@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
+import { Todo } from "./Todos";
+import { number } from "yargs";
 
 export default function AddTodos() {
   const [title, setTitle] = useState("");
-  const [date,setDate]=useState("");
+  const [date, setDate] = useState("");
+  const [todolist, setTodolist] = useState<Todo[]>([]);
   const navigate = useNavigate();
 
   const getCurrentDate = () => {
@@ -15,6 +18,13 @@ export default function AddTodos() {
   };
 
   const handleAdd = () => {
+    const todoExists = todolist.some((todo) => todo.title === title && todo.date===date);
+
+    if (todoExists) {
+      alert("Todo already exists");
+      return;
+    }
+
     if (title) {
       fetch("http://localhost:8000/todos", {
         method: "POST",
@@ -22,11 +32,13 @@ export default function AddTodos() {
         body: JSON.stringify({
           // 'id':,
           title: title,
-          date:date,
+          date: date,
           isCompleted: false,
         }),
       })
-        .then(() => navigate("/"))
+        .then(() => {
+          navigate("/");
+        })
         .then(() => alert("Data Added sucessfully"))
         .catch((err) => err.message);
     } else {
@@ -42,7 +54,7 @@ export default function AddTodos() {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
-        <input
+      <input
         type="date"
         className="inputdate"
         value={date}

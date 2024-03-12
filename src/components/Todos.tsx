@@ -31,7 +31,6 @@ export default function Todos() {
     todo: Todo,
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(e.target.checked);
     fetch(`http://localhost:8000/todos/${todo.id}`, {
       method: "PATCH",
       headers: {
@@ -48,7 +47,6 @@ export default function Todos() {
   };
 
   const handleDelete = (id: number) => {
-    console.log(id);
     fetch(`http://localhost:8000/todos/${id}`, {
       method: "DELETE",
       headers: {
