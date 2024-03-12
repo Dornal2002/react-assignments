@@ -12,19 +12,11 @@ export interface Todo {
 }
 
 export default function Todos() {
-  let { todos, loading, error } = useFetch("http://localhost:8000/todos");
+  let { todos, loading, error,refecthData } = useFetch("http://localhost:8000/todos");
   const [todolist, setTodolist] = useState<Todo[]>([]);
-  const [trigger, setTrigger] = useState(0);
+ 
 
   const navigate = useNavigate();
-
-  // const [newTodo,setNewTodo]=useState<Todo>()
-
-  // useEffect(() => {
-  //   fetch("http://localhost:8000/todos")
-  //     .then((resp) => resp.json())
-  //     .then((data) => setTodolist(data));
-  // }, [trigger]);
 
   useEffect(() => {
     if (todos) {
@@ -50,7 +42,8 @@ export default function Todos() {
     })
       .then((res) => res.json())
       .then(() => {
-        setTrigger(trigger + 1);
+        refecthData(true)
+        // setTrigger(trigger + 1);
       });
   };
 
@@ -62,7 +55,7 @@ export default function Todos() {
       },
     })
       .then(() => alert("Deleted Successfully"))
-      .then(() => setTrigger(trigger + 1));
+      .then(() =>  refecthData(true));
   };
 
   return (
