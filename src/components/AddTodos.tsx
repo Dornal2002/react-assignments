@@ -18,14 +18,12 @@ export default function AddTodos() {
   };
 
   const handleAdd = () => {
-    const todoExists = todolist.some((todo) => todo.title === title && todo.date===date);
-
-    if (todoExists) {
-      alert("Todo already exists");
-      return;
-    }
-
     if (title) {
+      const todoExists = todolist.some((todo) => todo.title === title);
+      if (todoExists) {
+        alert("Todo already exists");
+        return;
+      }
       fetch("http://localhost:8000/todos", {
         method: "POST",
         headers: { "content-type": "application-json" },
