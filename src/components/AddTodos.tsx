@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { Todo } from "./Todos";
-import { number } from "yargs";
+import { Todo } from "../types/Todo";
+
 
 export default function AddTodos() {
   const [title, setTitle] = useState("");

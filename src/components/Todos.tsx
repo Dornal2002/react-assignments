@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import "./Todos.css";
+import "../stylesheets/Todos.css";
 import { useNavigate } from "react-router-dom";
 import { ArrowUp, ArrowDown } from "lucide-react";
-import useFetch from "./useFetch";
+import useFetch from "../hooks/useFetch";
 
 export interface Todo {
   id: number;
