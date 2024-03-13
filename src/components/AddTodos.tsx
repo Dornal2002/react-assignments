@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Todo } from "../types/Todo";
+import { v4 as uuidv4 } from "uuid";
+import { useMutation ,  useQueryClient} from "react-query";
+import axios from "axios";
 
 
 export default function AddTodos() {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
-  const [todolist, setTodolist] = useState<Todo[]>([]);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const unique_id = uuidv4();
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -17,28 +21,29 @@ export default function AddTodos() {
     return `${year}-${month}-${day}`;
   };
 
+  const addTodoMutation = useMutation(
+    (newTodo: Todo) => axios.post("http://localhost:8000/todos", newTodo),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("todos");
+        navigate("/");
+        alert("Data Added successfully");
+      },
+      onError: (error: any) => {
+        console.error("Error adding todo:", error);
+      },
+    }
+  );
+
   const handleAdd = () => {
     if (title) {
-      const todoExists = todolist.filter((todo) => todo.title === title && todo.date===todo.date) ;
-      if (todoExists) {
-        alert("Todo already exists");
-        return;
-      }
-      fetch("http://localhost:8000/todos", {
-        method: "POST",
-        headers: { "content-type": "application-json" },
-        body: JSON.stringify({
-          // 'id':,
-          title: title,
-          date: date,
-          isCompleted: false,
-        }),
-      })
-        .then(() => {
-          navigate("/");
-        })
-        .then(() => alert("Data Added sucessfully"))
-        .catch((err) => err.message);
+      const newTodo: Todo = {
+        id:unique_id,
+        title: title,
+        date: date,
+        isCompleted: false,
+      };
+      addTodoMutation.mutate(newTodo);
     } else {
       alert("Todo Cannot be Empty");
     }
