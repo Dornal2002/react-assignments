@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Todo } from "./Todos";
-import { number } from "yargs";
+import { v4 as uuidv4, validate } from "uuid";
 
 export default function AddTodos() {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [todolist, setTodolist] = useState<Todo[]>([]);
   const navigate = useNavigate();
+  const unique_id=uuidv4;
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -19,7 +20,7 @@ export default function AddTodos() {
 
   const handleAdd = () => {
     if (title) {
-      const todoExists = todolist.filter((todo) => todo.title === title);
+      const todoExists = todolist.filter((todo) => (todo.title === title && todo.date==date));
       if (todoExists) {
         alert("Todo already exists");
         return;
@@ -28,7 +29,7 @@ export default function AddTodos() {
         method: "POST",
         headers: { "content-type": "application-json" },
         body: JSON.stringify({
-          // 'id':,
+          id:unique_id,
           title: title,
           date: date,
           isCompleted: false,

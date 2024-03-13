@@ -22,7 +22,6 @@ export default function Todos() {
 
   const navigate = useNavigate();
 
-
   useEffect(() => {
     if (todos) {
       setTodolist(todos);
