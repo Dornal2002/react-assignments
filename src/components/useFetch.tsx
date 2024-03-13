@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 export interface Todo {
   id: number;
   title: string;
+  date:string;
   isCompleted: boolean;
 }
 
@@ -10,7 +11,11 @@ export default function useFetch(url: string) {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState(null);
-  // const [trigger,setTrigger]=useState<number>(0);
+  const [refetch,setRefetch] = useState<boolean>(false)
+  
+  const refetchData = (value:boolean) =>{
+    setRefetch(value)
+  }
 
   useEffect(() => {
     fetch(url)
@@ -24,14 +29,13 @@ export default function useFetch(url: string) {
         setTodos(data);
         setLoading(false);
         setError(null);
-        // console.log(data)
+        setRefetch(false)
       })
       .catch((err) => {
-        // console.log(err.message);
         setError(err.message);
         setLoading(false);
       });
-  }, []);
+  }, [refetch]);
 
   // const refetch=()=>setTrigger(trigger+1)
 
@@ -43,5 +47,5 @@ export default function useFetch(url: string) {
   //     {todos && <GetTodos todos={todos} />}
   //   </div>
   // );
-  return { todos, loading, error };
+  return { todos, loading, error,refetchData };
 }

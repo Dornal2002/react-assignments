@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "./Todos.css";
 import { useNavigate } from "react-router-dom";
 import { ArrowUp, ArrowDown } from "lucide-react";
+import useFetch from "./useFetch";
 
 export interface Todo {
   id: number;
@@ -12,8 +13,8 @@ export interface Todo {
 }
 
 export default function Todos() {
+  let { todos, loading, error,refetchData } = useFetch("http://localhost:8000/todos");
   const [todolist, setTodolist] = useState<Todo[]>([]);
-  const [trigger, setTrigger] = useState(0);
   const [search, setSearch] = useState<string>("");
   const [status, setStatus] = useState("all");
   const [sortBy, setSortBy] = useState<string>("name");
@@ -21,11 +22,15 @@ export default function Todos() {
 
   const navigate = useNavigate();
 
+
   useEffect(() => {
-    fetch("http://localhost:8000/todos")
-      .then((resp) => resp.json())
-      .then((data) => setTodolist(data));
-  }, [trigger]);
+    if (todos) {
+      setTodolist(todos);
+      // setNextId(todos.length + 1);
+    }
+  }, [todos]);
+  {loading && <div>Loading... </div>}
+  {error && <div>{error}</div>}
 
   const handleCheckbox = (
     todo: Todo,
@@ -42,7 +47,7 @@ export default function Todos() {
     })
       .then((res) => res.json())
       .then(() => {
-        setTrigger(trigger + 1);
+          refetchData(true)
       });
   };
 
@@ -54,7 +59,7 @@ export default function Todos() {
       },
     })
       .then(() => alert("Deleted Successfully"))
-      .then(() => setTrigger(trigger + 1));
+      .then(() =>    refetchData(true));
   };
 
   const handleStatus = (e:React.MouseEvent<HTMLButtonElement,MouseEvent>) => {
