@@ -11,9 +11,9 @@ const Counter = () => {
     <div className='text-center mt-3'>
       <h1>Counter :{count}</h1>
       <p>
-        <button className='btn btn-primary ms-2' onClick= {()=>dispatch(increment())}>Increment</button>
-        <button className='btn btn-primary ms-2' onClick= {()=>dispatch(decrement())}>Decrement</button>
-        <button  className='btn btn-primary ms-2'onClick= {()=>dispatch(reset())}>Reset</button>
+        <button className='btn btn-primary ms-2 btn-outline-dark' onClick= {()=>dispatch(increment())}>Increment</button>
+        <button className='btn btn-primary ms-2 btn-outline-dark' onClick= {()=>dispatch(decrement())}>Decrement</button>
+        <button  className='btn btn-primary ms-2 btn-outline-dark'onClick= {()=>dispatch(reset())}>Reset</button>
       </p>
     </div>
   )
