@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import "./Todos.css";
+import "../stylesheets/Todos.css"
 import { useNavigate } from "react-router-dom";
 import { ArrowUp, ArrowDown } from "lucide-react";
-import useFetch from "./useFetch";
-
-export interface Todo {
-  id: number;
-  title: string;
-  date: string;
-  isCompleted: boolean;
-}
+import useFetch from "../hooks/useFetch";
+import { Todo } from "../types/Todo";
 
 export default function Todos() {
-  let { todos, loading, error,refetchData } = useFetch("http://localhost:8000/todos");
+  let { data, isLoading, error,refetch } = useFetch("http://localhost:8000/todos");
   const [todolist, setTodolist] = useState<Todo[]>([]);
   const [search, setSearch] = useState<string>("");
   const [status, setStatus] = useState("all");
@@ -23,13 +17,13 @@ export default function Todos() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (todos) {
-      setTodolist(todos);
+    if (data) {
+      setTodolist(data.data);
       // setNextId(todos.length + 1);
     }
-  }, [todos]);
-  {loading && <div>Loading... </div>}
-  {error && <div>{error}</div>}
+  }, [data]);
+  // {loading && <div>Loading... </div>}
+  // {error && <div>{error}</div>}
 
   const handleCheckbox = (
     todo: Todo,
@@ -46,11 +40,11 @@ export default function Todos() {
     })
       .then((res) => res.json())
       .then(() => {
-          refetchData(true)
+          refetch()
       });
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     fetch(`http://localhost:8000/todos/${id}`, {
       method: "DELETE",
       headers: {
@@ -58,7 +52,7 @@ export default function Todos() {
       },
     })
       .then(() => alert("Deleted Successfully"))
-      .then(() =>    refetchData(true));
+      .then(() =>    refetch());
   };
 
   const handleStatus = (e:React.MouseEvent<HTMLButtonElement,MouseEvent>) => {

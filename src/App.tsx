@@ -11,7 +11,7 @@ import Error from "./components/Error";
 import ViewTodo from "./components/ViewTodo";
 import TodoNavbar from "./components/TodoNavbar";
 import { QueryClientProvider, QueryClient } from 'react-query';
-import Todos from "./components/Todos";
+import Todos from './components/Todos';
 
 const queryClient =new QueryClient()
 function App() {
@@ -21,7 +21,7 @@ function App() {
       <Router>
         <TodoNavbar />
         <Routes>
-          <Route path="/" element={<Todos />} />
+          <Route path="/" element={<Todos/>} />
           <Route path="/addtodos" element={<AddTodos />} />
           <Route path="/viewtodos/:id" element={<ViewTodo />} />
           <Route path="*" element={<Error />} />

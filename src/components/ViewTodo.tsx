@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 export default function ViewTodo() {
   const [title, setTitle] = useState<string>("");
   const [date,setDate]=useState<string>("");
+  const [description,setDescription]=useState<string>("")
+  const [assignee,setAssignee]=useState<string>("")
+
   const params = useParams();
   useEffect(() => {
     const fetchData = async () => {
@@ -12,6 +15,8 @@ export default function ViewTodo() {
       );
       setTitle(res.title);
       setDate(res.date);
+      setAssignee(res.assignee);
+      setDescription(res.description);
     };
     fetchData();
   }, [params.id]);
@@ -21,6 +26,10 @@ export default function ViewTodo() {
       <p>{title}</p>
       <label>Date: </label>
       <p>{date}</p>
+      <label>Description : </label>
+      <p>{description}</p>
+      <label>Assignee: </label>
+      <p>{assignee}</p>
     </div>
   );
 }
