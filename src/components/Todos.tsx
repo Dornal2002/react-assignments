@@ -88,8 +88,13 @@ export default function Todos() {
     return 0;
   });
 
+  if(error){
+    alert(error);
+  }
+
   return (
     <>
+    {isLoading ? <div>Loading..</div>:
       <div className="todos">
         <div className="d-flex justify-content-left mb-3 mt-3">
           <input
@@ -219,7 +224,7 @@ export default function Todos() {
             </tbody>
           </table>
         </div>
-      </div>
+      </div>}
     </>
   );
 }
