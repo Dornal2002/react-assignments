@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "../stylesheets/Todos.css";
 import { useNavigate } from "react-router-dom";
 import { ArrowUp, ArrowDown } from "lucide-react";
-import useFetch from "../hooks/useFetch";
+import { useDeleteTodo, useGetTodos, usePatchTodo } from "../hooks/todo.hook";
 import { useQuery, useMutation } from "react-query";
 import axios from "axios";
 import { Todo } from "../types/Todo";
@@ -14,95 +14,86 @@ export default function Todos() {
   const [search, setSearch] = useState<string>("");
   const [status, setStatus] = useState("all");
   const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(2);
+  const [limit, setLimit] = useState<number>(5);
   const [totalpages, setTotalPages] = useState(2);
   const [sortBy, setSortBy] = useState<string>("name");
   const [sortOrder, setSortOrder] = useState<string>("asc");
-  const { data, error, isLoading, refetch } = useQuery({
-    queryKey: ["todos", page, limit, search, sortBy, sortOrder],
-    queryFn: async () => {
-      const res = await axios.get(
-        // `http://localhost:8000/todos?_page=${page}&_per_page=${limit}&`
-        `http://localhost:8000/todos?_page=${page}&_limit=${limit}&title_like=${search}&_sort=${sortBy}&_order=${sortOrder}&isCompleted_like=${status}`
-      );
-      setTotalPages(Math.ceil(res.headers['x-total-count']/limit))
-      if(!limit) setTotalPages(1)
-      return res.data;
-    },
-  });
+
+  const { todosList, isTodoListLoading, refetchTodos } = useGetTodos({ _page: page, _limit: limit })
+  const {HandleCheckbox} = usePatchTodo()
+  const {handleDelete} = useDeleteTodo()
+  // const { data, error, isLoading, refetch } = useQuery({
+  //   queryKey: ["todos", page, limit, search, sortBy, sortOrder],
+  //   queryFn: async () => {
+  //     const res = await axios.get(
+  //       // `http://localhost:8000/todos?_page=${page}&_per_page=${limit}&`
+  //       `http://localhost:8000/todos?_page=${page}&_limit=${limit}&title_like=${search}&_sort=${sortBy}&_order=${sortOrder}&isCompleted_like=${status}`
+  //     );
+  //     console.log("HEARDER ONSODE",res.headers['x-total-count'])
+  //     setTotalPages(Math.ceil(res.headers['x-total-count']/limit))
+  //     if(!limit) setTotalPages(1)
+  //     return res.data;
+  //   },
+  // });
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (data) {
-      setTodolist(data);
+    if (todosList) {
+      setTodolist(todosList.data);
+      console.log("HEADER",todosList.headers['x-total-count'])
+      setTotalPages(Math.ceil(todosList.headers['x-total-count']/limit))
+
     }
-  }, [data]);
+  }, [todosList]);
 
-  const { mutate: HandleCheckbox } = useMutation(
-    (todo: Todo) =>
-      axios.patch(`http://localhost:8000/todos/${todo.id}`, {
-        isCompleted: !todo.isCompleted,
-      }),
-    {
-      onSuccess: () => {
-        refetch();
-      },
-    }
-  );
 
-  const { mutate: handleDelete } = useMutation(
-    (id: string) => axios.delete(`http://localhost:8000/todos/${id}`),
-    {
-      onSuccess: () => {
-        refetch();
-      },
-    }
-  );
 
-  // const handleStatus = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-  //   setStatus(e.currentTarget.value);
-  // };
-
-  // const filteredData = todolist?.filter((item: Todo) => {
-  //   if (status === "all") {
-  //     return true;
-  //   } else if (status === "complete") {
-  //     return item.isCompleted === true;
-  //   } else if (status === "incomplete") {
-  //     return item.isCompleted === false;
-  //   }
-  //   return false;
-  // });
-
-  // const handleSort = (criteria: string) => {
-  //   if (criteria === sortBy) {
-  //     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-  //   } else {
-  //     setSortBy(criteria);
-  //     setSortOrder("asc");
-  //   }
-  // };
-
-  // filteredData?.sort((a: Todo, b: Todo) => {
-  //   if (sortBy === "name") {
-  //     return sortOrder === "asc"
-  //       ? a.title.localeCompare(b.title)
-  //       : b.title.localeCompare(a.title);
-  //   } else if (sortBy === "date") {
-  //     return sortOrder === "asc"
-  //       ? new Date(a.date).getTime() - new Date(b.date).getTime()
-  //       : new Date(b.date).getTime() - new Date(a.date).getTime();
-  //   }
-  //   return 0;
-  // });
-
-  if (error) {
-    alert(error);
+  const handlePageChange = (page: number) => {
+    setPage(page)
+    // refetchTodos()
   }
+
+  const handleStatus = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    setStatus(e.currentTarget.value);
+  };
+
+  const filteredData = todolist?.filter((item: Todo) => {
+    if (status === "all") {
+      return true;
+    } else if (status === "complete") {
+      return item.isCompleted === true;
+    } else if (status === "incomplete") {
+      return item.isCompleted === false;
+    }
+    return false;
+  });
+
+  const handleSort = (criteria: string) => {
+    if (criteria === sortBy) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(criteria);
+      setSortOrder("asc");
+    }
+  };
+
+  filteredData?.sort((a: Todo, b: Todo) => {
+    if (sortBy === "name") {
+      return sortOrder === "asc"
+        ? a.title.localeCompare(b.title)
+        : b.title.localeCompare(a.title);
+    } else if (sortBy === "date") {
+      return sortOrder === "asc"
+        ? new Date(a.date).getTime() - new Date(b.date).getTime()
+        : new Date(b.date).getTime() - new Date(a.date).getTime();
+    }
+    return 0;
+  });
+
   return (
     <>
-      {isLoading ? (
+      {isTodoListLoading ? (
         <h3>Loading...</h3>
       ) : (
         <div className="todos">
@@ -130,17 +121,15 @@ export default function Todos() {
                 aria-labelledby="dropdownMenuButton"
               >
                 <button
-                  className={`dropdown-item ${
-                    sortBy === "name" ? "active" : ""
-                  }`}
+                  className={`dropdown-item ${sortBy === "name" ? "active" : ""
+                    }`}
                   onClick={() => setSortBy("name")}
                 >
                   Name
                 </button>
                 <button
-                  className={`dropdown-item ${
-                    sortBy === "date" ? "active" : ""
-                  }`}
+                  className={`dropdown-item ${sortBy === "date" ? "active" : ""
+                    }`}
                   onClick={() => setSortBy("date")}
                 >
                   Date
@@ -149,7 +138,7 @@ export default function Todos() {
             </div>
             <div>
               <span onClick={() => setSortOrder("asc")}>
-                 <ArrowUp />
+                <ArrowUp />
               </span>
               <span onClick={() => setSortOrder("desc")}>
                 <ArrowDown />
@@ -173,24 +162,22 @@ export default function Todos() {
                 <button
                   className="dropdown-item"
                   value="all"
-                  // onClick={handleStatus}
-                  onClick={()=>(setStatus("all"))}
+                  onClick={handleStatus}
                 >
                   All
                 </button>
                 <button
                   className="dropdown-item"
                   value="complete"
-                  // onClick={handleStatus}
-                  onClick={()=>(setStatus("complete"))}
+                  onClick={handleStatus}
+                  
                 >
                   Completed
                 </button>
                 <button
                   className="dropdown-item"
                   value="incomplete"
-                  // onClick={handleStatus}
-                  onClick={()=>(setStatus("incomplete"))}
+                  onClick={handleStatus}
                 >
                   Incomplete
                 </button>
@@ -208,7 +195,12 @@ export default function Todos() {
                 </tr>
               </thead>
               <tbody>
-                {todolist
+                {filteredData
+                 .filter((item) => {
+                  return search.toLocaleUpperCase() === ""
+                    ? item
+                    : item.title.toLocaleLowerCase().includes(search);
+                })
                   .map((item: Todo, index: number) => (
                     <tr key={item.id}>
                       <td>{index + 1}</td>
@@ -224,6 +216,7 @@ export default function Todos() {
                           checked={item.isCompleted}
                           onChange={() => HandleCheckbox(item)}
                           type="checkbox"
+                          
                         />
                         <button
                           className="btn btn-danger"
@@ -240,14 +233,15 @@ export default function Todos() {
           <div>
             <button
               className="btn btn-primary"
-              onClick={() => setPage((page) => page - 1)}
+              onClick={() => handlePageChange(page - 1)}
               disabled={page === 1}
             >
               Previous
             </button>
+            {page}/{totalpages}
             <button
               className="btn btn-primary ms-2"
-              onClick={() => setPage((page) => page + 1)}
+              onClick={() => handlePageChange(page + 1)}
               disabled={page >= totalpages}
             >
               Next
@@ -269,3 +263,5 @@ export default function Todos() {
     </>
   );
 }
+
+
