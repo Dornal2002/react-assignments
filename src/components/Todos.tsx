@@ -183,6 +183,8 @@ export default function Todos() {
               <tr>
                 <th>Sr.No</th>
                 <th>Title</th>
+                <th>Description</th>
+                <th>Assignee</th>
                 <th>Date</th>
                 <th>Action</th>
               </tr>
@@ -202,6 +204,8 @@ export default function Todos() {
                         {item.title}
                       </div>
                     </td>
+                    <td>{item.description}</td>
+                    <td>{item.assignee}</td>
                     <td>{item.date}</td>
                     <td>
                       <input

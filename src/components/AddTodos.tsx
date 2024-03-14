@@ -1,9 +1,17 @@
-import React from "react";
-import { Form, Formik, useFormik, Field, ErrorMessage } from "formik";
+import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { v4 as uuidv4, validate } from "uuid";
+import { v4 as uuidv4 } from "uuid";
+
+const initialValues = {
+  id: "",
+  title: "",
+  description: "",
+  assignee: "",
+  date: "",
+  isCompleted: false,
+};
 
 const AddTodos = () => {
   const navigate = useNavigate();
@@ -13,34 +21,44 @@ const AddTodos = () => {
     title: yup.string().required("Title is required"),
     description: yup.string().required("Description is required"),
     assignee: yup.string().required("Assignee is required"),
-    date: yup.date()
+    date: yup
+      .date()
       .min(new Date(), "due date cannot be less than current data")
       .required("Due date is required"),
   });
 
   const formik = useFormik({
-    initialValues: {
-      id: "",
-      title: "",
-      description: "",
-      assignee: "",
-      date: "",
-      isCompleted:false
-    },
+    initialValues: initialValues,
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    // onSubmit: async (values) => {
+    //   try {
+    //     // Post data to your API endpoint
+    //     await axios.post("http://localhost:8000/todos", {
+    //       id: unique_id,
+    //       title: values.title,
+    //       description: values.description,
+    //       assignee: values.assignee,
+    //       date: values.date,
+    //       isCompleted:values.isCompleted
+    //     });
+
+    //     // Redirect to home page or wherever you want after successful submission
+    //     navigate("/");
+    //   } catch (error) {
+    //     console.error("Error:", error);
+    //     alert("Failed to add task. Please try again.");
+    //   }
+    // },
+    onSubmit: async ({ title, description, assignee, date, isCompleted }) => {
       try {
-        // Post data to your API endpoint
         await axios.post("http://localhost:8000/todos", {
           id: unique_id,
-          title: values.title,
-          description: values.description,
-          assignee: values.assignee,
-          date: values.date,
-          isCompleted:values.isCompleted
+          title,
+          description,
+          assignee,
+          date,
+          isCompleted,
         });
-
-        // Redirect to home page or wherever you want after successful submission
         navigate("/");
       } catch (error) {
         console.error("Error:", error);
@@ -50,7 +68,6 @@ const AddTodos = () => {
   });
 
   return (
-  
     <div className="container">
       <h2>Add Task</h2>
       <form onSubmit={formik.handleSubmit}>
@@ -114,7 +131,7 @@ const AddTodos = () => {
           <input
             type="date"
             id="date"
-            name="date" // Un-commented this line
+            name="date"
             className="form-control"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
