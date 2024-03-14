@@ -1,52 +1,78 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { Todo } from "./Todos";
-import { Formik,Form,Field,ErrorMessage } from 'formik';
+import { Todo } from "../types/Todo";
+import { v4 as uuidv4 } from "uuid"
+import { useMutation ,  useQueryClient} from "react-query";
+import axios from "axios";
+import * as yup from 'yup'
+import { Form } from "react-router-dom";
+
+const initialValues = {
+  title: "",
+  date:""
+}
+
+
+const validationSchema = yup.object({
+  title:yup.string()
+        .max(20,"title length must be less than 20 characters")
+        .required("Title is required"),
+  date:yup.date()
+        .min(new Date(),"due date cannot be less than current data")
+        .required("Due Date is required")
+})
 
 export default function AddTodos() {
-  const [title, setTitle] = useState("");
-  const [date, setDate] = useState("");
-  const [todolist, setTodolist] = useState<Todo[]>([]);
+  // const [title, setTitle] = useState("");
+  // const [date, setDate] = useState("");
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const unique_id = uuidv4();
 
-  const getCurrentDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = (today.getMonth() + 1).toString().padStart(2, "0");
-    const day = today.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
+  // const getCurrentDate = () => {
+  //   const today = new Date();
+  //   const year = today.getFullYear();
+  //   const month = (today.getMonth() + 1).toString().padStart(2, "0");
+  //   const day = today.getDate().toString().padStart(2, "0");
+  //   return `${year}-${month}-${day}`;
+  // };
 
-  const handleAdd = () => {
-    if (title) {
-      const todoExists = todolist.filter((todo) => todo.title === title && todo.date===todo.date) ;
-      if (todoExists) {
-        alert("Todo already exists");
-        return;
-      }
-      fetch("http://localhost:8000/todos", {
-        method: "POST",
-        headers: { "content-type": "application-json" },
-        body: JSON.stringify({
-          // 'id':,
-          title: title,
-          date: date,
-          isCompleted: false,
-        }),
-      })
-        .then(() => {
-          navigate("/");
-        })
-        .then(() => alert("Data Added sucessfully"))
-        .catch((err) => err.message);
-    } else {
-      alert("Todo Cannot be Empty");
+  const addTodoMutation = useMutation(
+    (newTodo: Todo) => axios.post("http://localhost:8000/todos", newTodo),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("todos");
+        navigate("/");
+        alert("Data Added successfully");
+      },
+      onError: (error: any) => {
+        console.error("Error adding todo:", error);
+      },
     }
-  };
+  );
+
+  const onSubmit = (values:any) => {
+      const newTodo: Todo = {
+        id:unique_id,
+        title: values.title,
+        date: values.date,
+        isCompleted: false,
+      }
+      addTodoMutation.mutate(newTodo);
+    } 
+  
 
   return (
+
     <div className="container">
-      <input
+      {/* <Form> */}
+      {/* <Field
+        className="h-10 mt-16 px-5 mx-16 w-96 border-solid border-2 border-gray-100 rounded-md"
+        name = "title"
+        placeholder="todo title"
+        />
+      </Form> */}
+      {/* <input
         type="text"
         placeholder="Enter Todos"
         value={title}
@@ -61,7 +87,7 @@ export default function AddTodos() {
       />
       <button className="btn btn-danger" onClick={handleAdd}>
         Add
-      </button>
+      </button> */}
     </div>
-  );
+    )
 }

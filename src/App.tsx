@@ -6,12 +6,12 @@ import {
   Routes,
   useNavigate,
 } from "react-router-dom";
-import Todos from './components/Todos';
 import AddTodos from "./components/AddTodos";
 import Error from "./components/Error";
 import ViewTodo from "./components/ViewTodo";
 import TodoNavbar from "./components/TodoNavbar";
 import { QueryClientProvider, QueryClient } from 'react-query';
+import Todos from "./components/Todos";
 
 const queryClient =new QueryClient()
 function App() {
