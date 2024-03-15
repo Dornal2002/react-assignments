@@ -6,6 +6,25 @@ import { ArrowUp, ArrowDown } from "lucide-react";
 import useFetch from "../hooks/useFetch";
 import { Todo } from "../types/Todo";
 
+
+ 
+ interface InitialState {
+  todolist: []; 
+  search: string;
+  status: 'all' | 'completed' | 'active'; 
+  sortBy: 'name' | 'date';
+  sortOrder: 'asc' | 'desc';
+}
+
+const initialState: InitialState = {
+  todolist: [],
+  search: '',
+  status: 'all',
+  sortBy: 'name',
+  sortOrder: 'asc'
+};
+
+
 // Define action types
 const SET_TODOLIST = 'SET_TODOLIST';
 const SET_SEARCH = 'SET_SEARCH';
@@ -13,8 +32,23 @@ const SET_STATUS = 'SET_STATUS';
 const SET_SORT_BY = 'SET_SORT_BY';
 const SET_SORT_ORDER = 'SET_SORT_ORDER';
 
+// Action creators
+const setTodoList = (payload: any) => ({ type: SET_TODOLIST, payload });
+const setSearch = (payload: string) => ({ type: SET_SEARCH, payload });
+const setStatus = (payload: 'all' | 'completed' | 'active') => ({ type: SET_STATUS, payload });
+const setSortBy = (payload: 'name' | 'date') => ({ type: SET_SORT_BY, payload });
+const setSortOrder = (payload: 'asc' | 'desc') => ({ type: SET_SORT_ORDER, payload });
+
+// Action type
+type ActionType =
+  | ReturnType<typeof setTodoList>
+  | ReturnType<typeof setSearch>
+  | ReturnType<typeof setStatus>
+  | ReturnType<typeof setSortBy>
+  | ReturnType<typeof setSortOrder>;
+  
 // Reducer function
-const reducer = (state:any, action:any) => {
+const reducer = (state:InitialState, action:ActionType) => {
   switch(action.type) {
     case SET_TODOLIST:
       return {
@@ -48,15 +82,6 @@ const reducer = (state:any, action:any) => {
 
 export default function Todos() {
   let { data, isLoading, error, refetch } = useFetch("http://localhost:8000/todos");
-
-  // Initial state
-  const initialState = {
-    todolist: [],
-    search: '',
-    status: 'all',
-    sortBy: 'name',
-    sortOrder: 'asc'
-  };
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const { todolist, search, status, sortBy, sortOrder } = state;
