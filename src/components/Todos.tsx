@@ -94,9 +94,9 @@ export default function Todos() {
   });
 
 
-  const searchFilter = (item:Todo, search:string) => {
+  const searchFilter = filteredData.filter((item:Todo) => {
     return search.trim() === "" ? true : item.title.toLowerCase().includes(search.toLowerCase());
-  };
+  });
 
 
   if (error){
@@ -199,8 +199,7 @@ export default function Todos() {
               </tr>
             </thead>
             <tbody>
-              {filteredData
-               .filter(item => searchFilter(item, search))
+              {searchFilter
                 .map((item: Todo, index: number) => (
                   <tr key={item.id}>
                     <td>{index + 1}</td>
