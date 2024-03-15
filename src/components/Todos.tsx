@@ -28,8 +28,6 @@ export default function Todos() {
       // setNextId(todos.length + 1);
     }
   }, [todos]);
-  {loading && <div>Loading... </div>}
-  {error && <div>{error}</div>}
 
   const handleCheckbox = (
     todo: Todo,
@@ -68,13 +66,10 @@ export default function Todos() {
   const filteredData = todolist.filter((item: Todo) => {
     if (status === 'all') {
       return true;
-    } else if (status === 'complete') {
-      return item.isCompleted === true;
-    } else if (status === 'incomplete') {
-      return item.isCompleted === false;
     }
-    return false;
+    return status === 'complete' ? item.isCompleted : !item.isCompleted;
   });
+  
 
   const handleSort = (criteria: string) => {
     if (criteria === sortBy) {
@@ -85,6 +80,10 @@ export default function Todos() {
     }
   };
 
+  const navigateTodo =(url:string,id:number)=>{
+    navigate(url+id)
+  }
+
   filteredData.sort((a: Todo, b: Todo) => {
     if (sortBy === "name") {
       return sortOrder === "asc" ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title);
@@ -94,8 +93,19 @@ export default function Todos() {
     return 0;
   });
 
+
+  const searchFilter = (item:Todo, search:string) => {
+    return search.trim() === "" ? true : item.title.toLowerCase().includes(search.toLowerCase());
+  };
+
+
+  if (error){
+    alert(error)
+  }
+
   return (
     <>
+    {loading?<div>Loading....</div>:
       <div className="todos">
         <div className="d-flex justify-content-left mb-3 mt-3">
           <input
@@ -190,16 +200,12 @@ export default function Todos() {
             </thead>
             <tbody>
               {filteredData
-                .filter((item) => {
-                  return search.toLocaleUpperCase() === ""
-                    ? item
-                    : item.title.toLocaleLowerCase().includes(search);
-                })
+               .filter(item => searchFilter(item, search))
                 .map((item: Todo, index: number) => (
                   <tr key={item.id}>
                     <td>{index + 1}</td>
                     <td>
-                      <div onClick={() => navigate("/viewtodos/" + item.id)}>
+                      <div onClick={() => navigateTodo("/viewtodos/" , item.id)}>
                         {item.title}
                       </div>
                     </td>
@@ -225,7 +231,7 @@ export default function Todos() {
             </tbody>
           </table>
         </div>
-      </div>
+      </div>}
     </>
   );
 }
