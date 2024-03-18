@@ -18,42 +18,42 @@ test('AddTodos component renders correctly', () => {
 });
 
 
-// test('Adding a todo with valid input', async () => {
-//   render(
-//     <Router>
-//       <AddTodos />
-//     </Router>
-//   );
+test('Adding a todo with valid input', async () => {
+  render(
+    <Router>
+      <AddTodos />
+    </Router>
+  );
   
-  // const mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
-  // const todoInput = screen.getByPlaceholderText('Enter Todos');
-  // // const input= screen.getAllByRole( "textbox" )
-  // // console.log(input)
-  // // expect(input).toBeInTheDocument()
-  // const dateInput = screen.getByTestId('date-input');
-  // const addButton = screen.getByText('Add');
+  const mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
+  const todoInput = screen.getByPlaceholderText('Enter Todos');
+  // const input= screen.getAllByRole( "textbox" )
+  // console.log(input)
+  // expect(input).toBeInTheDocument()
+  const dateInput = screen.getByTestId('date-input');
+  const addButton = screen.getByText('Add');
 
-  // fireEvent.change(todoInput, { target: { value: 'Test Todo' } });
-  // fireEvent.change(dateInput, { target: { value: '2024-03-16' } });
-  // fireEvent.click(addButton);
+  fireEvent.change(todoInput, { target: { value: 'Test Todo' } });
+  fireEvent.change(dateInput, { target: { value: '2024-03-16' } });
+  fireEvent.click(addButton);
 
-  // await waitFor(() =>
-  //   expect(screen.getByText('Data Added successfully')).toBeInTheDocument()
-  // );
+  await waitFor(() =>
+    expect(screen.getByText('Data Added successfully')).toBeInTheDocument()
+  );
 
-  // expect(mockAlert).toHaveBeenCalledWith('Data Added successfully'); 
-  // });
+  expect(mockAlert).toHaveBeenCalledWith('Data Added successfully'); 
+  });
 
-// test('Adding a todo with empty input', () => {
-//   render(
-//     <Router> 
-//       <AddTodos/>
-//     </Router>
-//   );
+test('Adding a todo with empty input', () => {
+  render(
+    <Router> 
+      <AddTodos/>
+    </Router>
+  );
   
-//   const addButton = screen.getByText('Add');
+  const addButton = screen.getByText('Add');
   
-//   fireEvent.click(addButton);
+  fireEvent.click(addButton);
     
-//   expect(screen.getByText('Todo Cannot be Empty')).toBeInTheDocument();
-// });
+  expect(screen.getByText('Todo Cannot be Empty')).toBeInTheDocument();
+});

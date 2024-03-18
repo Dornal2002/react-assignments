@@ -17,9 +17,9 @@ export default function ViewTodo() {
   }, [params.id]);
   return (
     <div>
-      <label>Title : </label>
+      <label>Title:</label>
       <p>{title}</p>
-      <label>Date: </label>
+      <label>Date:</label>
       <p>{date}</p>
     </div>
   );
